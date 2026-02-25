@@ -1,0 +1,36 @@
+{
+  "name": "wheee",
+  "owner": {
+    "name": "Lars Kwiatkowski",
+    "email": "lars@kwiatkowski.dev"
+  },
+  "metadata": {
+    "description": "Wheee Protocol — Structured development workflows with guided and autonomous execution modes",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "wheee",
+      "source": ".",
+      "description": "Structured development workflow with 45 commands, 6 specialist agents, quality gates, and two execution modes (guided or autonomous via Agent Teams)",
+      "version": "2.0.0",
+      "author": {
+        "name": "Lars Kwiatkowski"
+      },
+      "license": "MIT",
+      "keywords": [
+        "workflow",
+        "project-management",
+        "agent-teams",
+        "autonomous",
+        "quality-gates",
+        "security",
+        "planning",
+        "code-quality",
+        "phases",
+        "milestones"
+      ],
+      "category": "development-workflow"
+    }
+  ]
+}

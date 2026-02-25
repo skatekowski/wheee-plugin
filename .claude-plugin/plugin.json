@@ -1,0 +1,23 @@
+{
+  "name": "wheee",
+  "version": "2.0.0",
+  "description": "Structured development workflow with guided and autonomous execution modes. Plan once, execute guided or let agent teams run autonomously.",
+  "author": {
+    "name": "Lars Kwiatkowski"
+  },
+  "homepage": "https://github.com/lkwiatkowski/wheee-protocol",
+  "repository": "https://github.com/lkwiatkowski/wheee-protocol",
+  "license": "MIT",
+  "keywords": [
+    "workflow",
+    "project-management",
+    "agent-teams",
+    "autonomous",
+    "quality-gates",
+    "security",
+    "planning",
+    "phases",
+    "milestones",
+    "code-quality"
+  ]
+}

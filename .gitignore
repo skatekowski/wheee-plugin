@@ -1,0 +1,23 @@
+# Runtime data
+data/*.db
+data/*.sqlite
+
+# Session logs (generated at runtime)
+memory/logs/*.md
+!memory/logs/.gitkeep
+
+# Scratch space
+.tmp/*
+!.tmp/.gitkeep
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+
+# User-specific args (template stays)
+args/*.yaml
+!args/README.md

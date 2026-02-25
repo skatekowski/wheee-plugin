@@ -1,0 +1,40 @@
+{
+  "$schema": "https://code.claude.com/schemas/hooks.json",
+  "description": "Wheee Protocol hooks — Code-Gate, Guardrail, Planning Compliance",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./hooks/code-gate.sh",
+            "description": "Code-Gate: Block direct file edits in Wheee-managed projects"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./hooks/guardrail.sh",
+            "description": "Guardrail: Block dangerous/destructive commands"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./hooks/planning-compliance.sh",
+            "description": "Planning Compliance: Ensure ROADMAP.md and STATE.md are updated after review"
+          }
+        ]
+      }
+    ]
+  }
+}
