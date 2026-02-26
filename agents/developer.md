@@ -2,7 +2,7 @@
 name: wheee-developer
 description: "Wheee Developer. Implements code changes following the plan. Use when writing code, building features, fixing bugs, or refactoring. Works within FIP scope boundaries."
 tools: Read, Write, Edit, Grep, Glob, Bash
-model: sonnet
+model: opus
 permissionMode: acceptEdits
 memory: project
 isolation: worktree

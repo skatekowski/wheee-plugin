@@ -162,12 +162,12 @@ Seven specialist agents with persistent memory across sessions:
 | Orchestrator | Coordinates Agent Teams | inherit | No |
 | Researcher | Discovery and dependency analysis | haiku | No |
 | Architect | System design and FIP analysis | opus | No (plan mode) |
-| Developer | Implementation | sonnet | Yes (isolated worktree) |
+| Developer | Implementation | opus | Yes (isolated worktree) |
 | Reviewer | Quality + security review | sonnet | No |
 | Tester | Test writing and verification | sonnet | Yes |
 | Critic | Design evaluation via browser inspection | opus | No |
 
-Read-only agents (researcher, architect, reviewer, critic) cannot modify code. The developer works in a git worktree — isolated from your main branch. The critic uses browser tools to visually inspect rendered designs. Model routing keeps costs down: haiku for research, opus for architecture and design critique, sonnet for everything else.
+Read-only agents (researcher, architect, reviewer, critic) cannot modify code. The developer works in a git worktree — isolated from your main branch. The critic uses browser tools to visually inspect rendered designs. Model routing: haiku for fast research, opus for architecture, implementation, and design critique (where plan compliance matters), sonnet for review and testing (checklist-driven work).
 
 ## Project Structure
 
