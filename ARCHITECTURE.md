@@ -11,7 +11,7 @@ The Wheee Protocol is a Claude Code plugin that structures software development
 into planned, phased, quality-gated workflows. It provides:
 
 - **45 workflow commands** — A complete development process vocabulary
-- **6 specialist agents** — Persistent-memory roles for autonomous execution
+- **7 specialist agents** — Persistent-memory roles for autonomous execution
 - **4 core skills** — Quality gates, security scanning, dependency analysis, codebase mapping
 - **3 safety hooks** — Code-Gate, guardrail, planning compliance
 - **2 execution modes** — Guided (user supervises) or Autonomous (Agent Teams)
@@ -110,13 +110,14 @@ wheee-plugin/
 │   ├── audit.md                     # Project doctor — compliance check
 │   └── ... (36 more commands)       # Full protocol vocabulary
 │
-├── agents/                          # 6 specialist agent definitions
+├── agents/                          # 7 specialist agent definitions
 │   ├── orchestrator.md              # Team Lead — coordinates Agent Teams
 │   ├── researcher.md                # Read-only discovery and analysis
 │   ├── architect.md                 # System design, plan mode
 │   ├── developer.md                 # Code implementation, worktree isolation
 │   ├── reviewer.md                  # Quality + security review
-│   └── tester.md                    # Testing and verification
+│   ├── tester.md                    # Testing and verification
+│   └── critic.md                    # Design critic — visual/UX evaluation
 │
 ├── skills/                          # Core analysis skills
 │   ├── quality-gate/
@@ -204,16 +205,17 @@ There are no override mechanisms or environment variables. This ensures:
 - No "quick fixes" bypass quality gates
 - Review findings become follow-up tasks, not inline patches
 
-### 4. Six Agents With Clear Separation
+### 4. Seven Agents With Clear Separation
 
 | Agent | Model | Can Write? | Isolation | Memory | Purpose |
 |-------|-------|-----------|-----------|--------|---------|
 | Orchestrator | inherit | No | — | user | Coordinate teams, track progress |
 | Researcher | haiku | No | — | user | Discovery, context building |
 | Architect | opus | No | plan mode | user | System design, FIP analysis |
-| Developer | sonnet | Yes | worktree | project | Implementation |
+| Developer | opus | Yes | worktree | project | Implementation |
 | Reviewer | sonnet | No | — | user | Quality + security review |
 | Tester | sonnet | Yes | — | project | Test writing + verification |
+| Critic | opus | No | — | user | Design evaluation via screenshots |
 
 Key principles:
 - **Read-only agents cannot modify code** (researcher, architect, reviewer)
