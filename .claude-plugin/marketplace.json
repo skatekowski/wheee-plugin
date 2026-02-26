@@ -1,12 +1,11 @@
 {
   "name": "wheee",
   "owner": {
-    "name": "Lars Kwiatkowski",
-    "email": "lars@wheee.digital"
+    "name": "Lars Kwiatkowski"
   },
   "metadata": {
     "description": "Wheee Protocol — Structured development workflows with guided and autonomous execution modes",
-    "version": "1.0.0"
+    "version": "2.0.0"
   },
   "plugins": [
     {

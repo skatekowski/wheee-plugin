@@ -18,6 +18,9 @@ Thumbs.db
 .env
 .env.local
 
+# Code-Gate override files (temporary, created by dispatch agents)
+.planning/.code-gate-override
+
 # User-specific args (template stays)
 args/*.yaml
 !args/README.md

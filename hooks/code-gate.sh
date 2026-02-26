@@ -9,14 +9,15 @@
 # Direct file edits in those projects are blocked — only dispatched
 # agents or explicit overrides should modify project files.
 #
-# Override: Set WHEEE_CODE_GATE=off to disable (for dispatch agents).
+# Override: A temporary .planning/.code-gate-override file (created by
+#           dispatch agents) disables the gate. The file must contain a
+#           valid timestamp (< 30 min old) to prevent stale overrides.
+#
+# IMPORTANT: This hook is fail-open by design.
+# Any unexpected error must exit 0 (allow), never accidentally block.
 
 set -euo pipefail
-
-# If Code-Gate is explicitly disabled (dispatch agents set this), allow
-if [[ "${WHEEE_CODE_GATE:-on}" == "off" ]]; then
-  exit 0
-fi
+trap 'exit 0' ERR  # Fail-open: unexpected errors allow the command
 
 # Read hook input from stdin
 INPUT=$(cat)
@@ -60,6 +61,23 @@ if [[ "$IS_WHEEE_PROJECT" == "false" ]]; then
   exit 0  # Not a Wheee project, allow freely
 fi
 
+# Check for time-limited override file (used by dispatch agents)
+# The override file must exist AND contain a timestamp less than 30 min old.
+OVERRIDE_FILE="$PROJECT_ROOT/.planning/.code-gate-override"
+if [[ -f "$OVERRIDE_FILE" ]]; then
+  OVERRIDE_TS=$(cat "$OVERRIDE_FILE" 2>/dev/null || echo "0")
+  NOW=$(date +%s)
+  # Validate that the content is numeric
+  if [[ "$OVERRIDE_TS" =~ ^[0-9]+$ ]]; then
+    AGE=$((NOW - OVERRIDE_TS))
+    if [[ $AGE -lt 1800 ]]; then
+      exit 0  # Valid override, allow
+    fi
+    # Override expired — remove stale file and continue blocking
+    rm -f "$OVERRIDE_FILE" 2>/dev/null || true
+  fi
+fi
+
 # Allow edits to planning documents themselves
 case "$FILE_PATH" in
   "$PROJECT_ROOT/.planning/"*)
@@ -77,7 +95,6 @@ echo "  File: $FILE_PATH"
 echo "  Project: $PROJECT_ROOT"
 echo ""
 echo "Wheee projects require code changes to go through:"
-echo "  - /wheee:dispatch — dispatch to container agent"
 echo "  - /wheee:orchestrate — agent team execution"
 echo "  - /wheee:execute-phase — guided phase execution"
 echo ""

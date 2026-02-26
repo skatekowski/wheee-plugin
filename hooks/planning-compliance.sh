@@ -9,6 +9,7 @@
 # after a dispatch-review completes. If not, it blocks completion.
 
 set -euo pipefail
+trap 'exit 0' ERR  # Fail-open: unexpected errors allow the command
 
 # Read hook input from stdin
 INPUT=$(cat)
@@ -82,7 +83,7 @@ if [[ -n "$ISSUES" ]]; then
   echo "PLANNING COMPLIANCE: Review is NOT complete."
   echo ""
   echo "After dispatch-review, you MUST update:"
-  echo -e "$ISSUES"
+  printf "%b" "$ISSUES"
   echo ""
   echo "Required updates:"
   echo "  1. ROADMAP.md — Update checkboxes for completed tasks"
