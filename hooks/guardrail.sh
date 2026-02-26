@@ -4,8 +4,9 @@
 # Trigger: PreToolUse on Bash
 # Exit 0 = allow, Exit 2 = block
 #
-# Prevents: force pushes, hard resets, destructive rm, DROP TABLE,
-#           unsafe chmod, piped script execution, find -delete, etc.
+# Prevents: force pushes (incl. --force-with-lease), hard resets,
+#           destructive rm (-r or -rf), DROP TABLE, unsafe chmod,
+#           piped script execution, find -delete, etc.
 #
 # IMPORTANT: This hook is fail-open by design.
 # Any unexpected error must exit 0 (allow), never accidentally block.
@@ -34,9 +35,9 @@ CMD_LOWER=$(echo "$COMMAND" | tr '[:upper:]' '[:lower:]')
 
 # ── Dangerous pattern detection (regex-based) ────────────────────────
 
-# 1. rm with recursive+force flags in any order (rm -rf, rm -fr, rm -rfi, etc.)
-if echo "$CMD_LOWER" | grep -qE "rm[[:space:]]+-[a-z]*r[a-z]*f|rm[[:space:]]+-[a-z]*f[a-z]*r"; then
-  echo "GUARDRAIL BLOCKED: 'rm' with recursive+force flags detected."
+# 1. rm with recursive flag (with or without -f)
+if echo "$CMD_LOWER" | grep -qE "rm[[:space:]]+-[a-z]*r"; then
+  echo "GUARDRAIL BLOCKED: 'rm' with recursive flag detected."
   echo "If you need to do this, ask the user for explicit confirmation first."
   exit 2
 fi
@@ -48,7 +49,7 @@ if echo "$CMD_LOWER" | grep -qE "find[[:space:]]+.*-delete"; then
   exit 2
 fi
 
-# 3. git force push (--force or -f after push)
+# 3. git force push (--force, --force-with-lease, or -f after push)
 if echo "$CMD_LOWER" | grep -qE "git[[:space:]]+push[[:space:]]+.*--force|git[[:space:]]+push[[:space:]]+-[a-z]*f"; then
   echo "GUARDRAIL BLOCKED: Force push detected."
   echo "If you need to do this, ask the user for explicit confirmation first."
@@ -83,7 +84,7 @@ if echo "$CMD_LOWER" | grep -qE "curl[[:space:]]+.*\|[[:space:]]*(ba)?sh|wget[[:
   exit 2
 fi
 
-# ── Protected files — cannot be deleted ──────────────────────────────
+# ── Protected files — cannot be deleted or overwritten ───────────────
 # Uses CMD_LOWER for both file and operation matching (consistent casing)
 PROTECTED=(
   ".env"
@@ -102,7 +103,7 @@ PROTECTED=(
 
 for file in "${PROTECTED[@]}"; do
   if echo "$CMD_LOWER" | grep -qF "$file"; then
-    if echo "$CMD_LOWER" | grep -qE "(rm |del |unlink |mv |>|truncate )"; then
+    if echo "$CMD_LOWER" | grep -qE "(rm |del |unlink |mv |>>|>|truncate )"; then
       echo "GUARDRAIL BLOCKED: Cannot delete/overwrite protected file '$file'."
       exit 2
     fi

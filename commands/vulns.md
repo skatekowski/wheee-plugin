@@ -16,8 +16,8 @@ Dies ist KEIN oberflaechlicher pnpm-audit. Dies ist ein vollstaendiger Security-
 
 <context>
 Die Security-Checklist liegt an diesen Stellen (Reihenfolge pruefen):
-1. Wheee-Protokoll Root: `SECURITY-CHECKLIST.md`
-2. Im Projekt: `.planning/` oder `workspace/skills/dev/checklists/SECURITY-CHECKLIST.md`
+1. Im Wheee-Plugin: `skills/security-scan/references/SECURITY-CHECKLIST.md`
+2. Im Projekt unter: `.planning/` (falls projekt-spezifische Checklist existiert)
 
 Fuer Code-Qualitaet: `wheee quality-gate` (inkl. Security)
 Fuer Wheee-Compliance: `wheee audit`

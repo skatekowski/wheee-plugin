@@ -22,8 +22,8 @@ Dieses Gate wird regelmaessig ausgefuehrt:
 - Mindestens einmal pro Woche bei aktiver Entwicklung
 
 Die Checklisten liegen an diesen Stellen (in Reihenfolge pruefen):
-1. Im Wheee-Protokoll Root: `CODE-QUALITY-CHECKLIST.md` und `SECURITY-CHECKLIST.md`
-2. Im Projekt unter: `.planning/` oder `workspace/skills/dev/checklists/`
+1. Im Wheee-Plugin: `skills/quality-gate/references/CODE-QUALITY-CHECKLIST.md` und `skills/quality-gate/references/SECURITY-CHECKLIST.md`
+2. Im Projekt unter: `.planning/` (falls projekt-spezifische Checklisten existieren)
 </context>
 
 <process>

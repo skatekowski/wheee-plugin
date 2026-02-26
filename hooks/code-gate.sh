@@ -1,17 +1,16 @@
 #!/usr/bin/env bash
 # Hook: Code-Gate (PreToolUse Hook)
 # Purpose: Block direct Write/Edit in Wheee-managed projects.
-#          Code changes must go through dispatch or agent teams.
-# Trigger: PreToolUse on Write, Edit
+#          Code changes must go through agent teams or guided execution.
+# Trigger: PreToolUse on Write, Edit, MultilineEdit
 # Exit 0 = allow, Exit 2 = block
 #
 # When a project has a .planning/ directory, it's Wheee-managed.
-# Direct file edits in those projects are blocked — only dispatched
-# agents or explicit overrides should modify project files.
+# Direct file edits in those projects are blocked — only agent teams
+# or guided execution should modify project files.
 #
-# Override: A temporary .planning/.code-gate-override file (created by
-#           dispatch agents) disables the gate. The file must contain a
-#           valid timestamp (< 30 min old) to prevent stale overrides.
+# No overrides. No env vars. No bypass files.
+# Use /wheee:quick for legitimate small fixes.
 #
 # IMPORTANT: This hook is fail-open by design.
 # Any unexpected error must exit 0 (allow), never accidentally block.
@@ -39,10 +38,11 @@ if [[ -z "$FILE_PATH" ]]; then
   exit 0
 fi
 
-# Resolve to absolute path
+# Resolve to absolute path and normalize (remove ../ traversal)
 if [[ "$FILE_PATH" != /* ]]; then
   FILE_PATH="$(pwd)/$FILE_PATH"
 fi
+FILE_PATH="$(realpath -m "$FILE_PATH" 2>/dev/null || python3 -c "import os; print(os.path.normpath('$FILE_PATH'))" 2>/dev/null || echo "$FILE_PATH")"
 
 # Walk up from the file to find if it's in a Wheee-managed project
 CHECK_DIR=$(dirname "$FILE_PATH")
@@ -59,23 +59,6 @@ done
 
 if [[ "$IS_WHEEE_PROJECT" == "false" ]]; then
   exit 0  # Not a Wheee project, allow freely
-fi
-
-# Check for time-limited override file (used by dispatch agents)
-# The override file must exist AND contain a timestamp less than 30 min old.
-OVERRIDE_FILE="$PROJECT_ROOT/.planning/.code-gate-override"
-if [[ -f "$OVERRIDE_FILE" ]]; then
-  OVERRIDE_TS=$(cat "$OVERRIDE_FILE" 2>/dev/null || echo "0")
-  NOW=$(date +%s)
-  # Validate that the content is numeric
-  if [[ "$OVERRIDE_TS" =~ ^[0-9]+$ ]]; then
-    AGE=$((NOW - OVERRIDE_TS))
-    if [[ $AGE -lt 1800 ]]; then
-      exit 0  # Valid override, allow
-    fi
-    # Override expired — remove stale file and continue blocking
-    rm -f "$OVERRIDE_FILE" 2>/dev/null || true
-  fi
 fi
 
 # Allow edits to planning documents themselves

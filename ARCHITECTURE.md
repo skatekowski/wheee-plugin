@@ -195,11 +195,12 @@ Teammates claim tasks, execute, and report completion independently.
 
 ### 3. Code-Gate Is a Hook, Not a Rule
 
-CLAUDE.md rules can be reasoned around. A hook that returns exit code 2 cannot.
-The Code-Gate physically blocks Write/Edit operations in Wheee-managed projects
-(directories with `.planning/`). This ensures:
+CLAUDE.md rules can be reasoned around. A hook that returns exit code 2 is
+significantly harder to bypass — it physically blocks Write/Edit/MultilineEdit
+operations in Wheee-managed projects (directories with `.planning/`).
+There are no override mechanisms or environment variables. This ensures:
 
-- All code changes go through the protocol (dispatch, execute-phase, orchestrate)
+- All code changes go through the protocol (execute-phase, orchestrate, quick)
 - No "quick fixes" bypass quality gates
 - Review findings become follow-up tasks, not inline patches
 
@@ -232,7 +233,7 @@ sections and reports pass/fail. The agent decides what to do with the report.
 The 45 commands ARE the protocol. They define:
 - Initialization: `init`, `new-project`, `new-milestone`
 - Planning: `plan-phase`, `discuss-phase`, `research-phase`
-- Execution: `execute-phase`, `orchestrate`, `dispatch`
+- Execution: `execute-phase`, `orchestrate`, `quick`
 - Quality: `quality-gate`, `vulns`, `fip`, `audit`
 - Management: `progress`, `pause-work`, `resume-work`, `cleanup`
 - Tooling: `check`, `heal`, `perf`, `preview`, `prototype`
