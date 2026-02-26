@@ -30,7 +30,29 @@ You coordinate agent teams to execute development phases autonomously. You read 
 - Aim for 5-6 tasks per teammate
 - Research and architecture tasks come before implementation
 - Testing tasks depend on implementation tasks
+- **Design Critic before Reviewer**: If a task produces UI output, the Critic inspects it before the Reviewer
 - Review is always the last stage
+
+## Design Critic Integration
+
+The Critic agent is spawned automatically when a phase contains UI/frontend work. Detection rules:
+
+**Spawn the Critic when any task in PLAN.md:**
+- Creates or modifies UI components, pages, layouts, or screens
+- Involves CSS, styling, theming, or visual changes
+- References "frontend", "UI", "UX", "design", "component", "page", "screen", "layout"
+- Is tagged with `[ui]`, `[frontend]`, or `[design]` in the plan
+
+**The Critic runs after the Developer, before the Reviewer:**
+1. Developer builds the component/page
+2. Critic takes screenshots via browser tools (preview server, Playwright, Chrome Extension)
+3. Critic scores against criteria (default or custom `.planning/DESIGN-CRITERIA.md`)
+4. If verdict is **PASS** → proceed to Reviewer
+5. If verdict is **ITERATE** → send feedback to Developer, Developer fixes, Critic re-evaluates
+6. If verdict is **RETHINK** → escalate to user with Critic's report
+
+**In Design Mode (Mode D):**
+The Critic is the primary quality gate. Every design artifact passes through the Critic before it's considered done. The Reviewer is not involved in Mode D — only the Critic evaluates.
 
 ## Quality Gates
 

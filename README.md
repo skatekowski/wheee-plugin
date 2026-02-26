@@ -50,7 +50,7 @@ For existing projects, `/wheee:discuss-phase` gathers context through adaptive q
 
 This is where scope gets defined. Where features get shaped before they get built. Where a vague "add authentication" becomes a concrete plan with boundaries.
 
-## Two Execution Modes
+## Three Execution Modes
 
 The plan is always the same. Only execution differs.
 
@@ -89,6 +89,29 @@ The team self-coordinates:
 
 Good for: well-understood domains, parallelizable work, scaling output.
 
+### Design Mode — UX Before Code
+
+Start with the user experience, not the architecture. Mode D lets you explore UI/UX concepts, wireframes, and interaction flows before any technical planning begins.
+
+```
+/wheee:design                  # Start a UX/UI design round
+/wheee:convert                 # Turn design findings into S/M/L phases
+```
+
+Design Mode produces UX artifacts — screens, flows, component inventories. When the design is solid, `/wheee:convert` transforms those findings into concrete technical phases with tasks and acceptance criteria. The design drives the engineering, not the other way around.
+
+#### The Design Critic
+
+In autonomous mode, the **Critic agent** evaluates every design output against strict criteria — visual hierarchy, consistency, accessibility, spacing, typography, contrast ratios. It uses browser tools (Playwright, Chrome Extension, Preview Server) to take screenshots and inspect actual rendered CSS.
+
+The Critic scores each criterion 0-10 and gives a verdict: **PASS**, **ITERATE**, or **RETHINK**. No design moves to implementation without passing.
+
+Custom criteria? Drop a `.planning/DESIGN-CRITERIA.md` and the Critic uses your rules instead of the defaults.
+
+The Critic also runs during Guided and Autonomous Mode whenever a phase involves UI work — after the Developer builds a frontend component, the Critic inspects the rendered result before the Reviewer signs off.
+
+Good for: new products, UX-heavy features, redesigns, anything where "what should it look like?" comes before "how should it work?".
+
 ## Safety — Enforced by Hooks, Not Rules
 
 AI can be convinced to ignore a rule in a prompt. It cannot bypass a hook that returns exit code 2.
@@ -123,6 +146,7 @@ claude plugin install wheee
 | **Discovery** | `new-project`, `discuss-phase`, `research-phase`, `assess` | Define scope, gather context, recommend mode |
 | **Planning** | `init`, `plan-phase`, `new-milestone`, `add-phase`, `insert-phase` | Structure the work |
 | **Execution** | `execute-phase`, `orchestrate`, `quick` | Build — guided or autonomous |
+| **Design** | `design`, `convert`, `prototype`, `preview` | UX/UI first, then convert to engineering |
 | **Quality** | `quality-gate`, `vulns`, `fip`, `audit` | Verify before shipping |
 | **Management** | `progress`, `pause-work`, `resume-work`, `cleanup` | Track and maintain |
 | **Tooling** | `check`, `heal`, `perf`, `preview`, `prototype`, `design` | Dev utilities |
@@ -131,7 +155,7 @@ Run `/wheee:help` for the full reference.
 
 ## Agents
 
-Six specialist agents with persistent memory across sessions:
+Seven specialist agents with persistent memory across sessions:
 
 | Agent | Role | Model | Can Write Code? |
 |-------|------|-------|----------------|
@@ -141,8 +165,9 @@ Six specialist agents with persistent memory across sessions:
 | Developer | Implementation | sonnet | Yes (isolated worktree) |
 | Reviewer | Quality + security review | sonnet | No |
 | Tester | Test writing and verification | sonnet | Yes |
+| Critic | Design evaluation via browser inspection | opus | No |
 
-Read-only agents (researcher, architect, reviewer) cannot modify code. The developer works in a git worktree — isolated from your main branch. Model routing keeps costs down: haiku for research, opus for architecture, sonnet for everything else.
+Read-only agents (researcher, architect, reviewer, critic) cannot modify code. The developer works in a git worktree — isolated from your main branch. The critic uses browser tools to visually inspect rendered designs. Model routing keeps costs down: haiku for research, opus for architecture and design critique, sonnet for everything else.
 
 ## Project Structure
 
@@ -168,6 +193,14 @@ your-project/
 - **Teams** where AI agents handle implementation but humans set direction
 - **Projects** that outgrew "just vibe it" but don't need enterprise process
 - **Anyone** who's had an AI break something because nobody asked "what else uses this code?"
+
+## Standing On The Shoulders Of
+
+Wheee didn't come from nowhere. It builds on ideas from people who figured out pieces of this puzzle first:
+
+- **[GSD (Get Shit Done)](https://github.com/gsd-build/get-shit-done)** — The context engineering and atomic planning methodology that Wheee adapts and extends. Wave-based parallelization, fresh context per task, structured planning documents. GSD showed that AI-assisted development needs deliberate context management to maintain quality at scale.
+
+- **[Boris Cherny's workflow](https://x.com/AskBorislav/status/2007179832300581177)** — Boris built Claude Code at Anthropic. His approach to parallel Claude sessions, plan-mode-first development, verification via browser tools, and shared CLAUDE.md conventions directly influenced how Wheee structures its execution modes and agent coordination.
 
 ## License
 
