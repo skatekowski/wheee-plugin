@@ -42,7 +42,7 @@ fi
 if [[ "$FILE_PATH" != /* ]]; then
   FILE_PATH="$(pwd)/$FILE_PATH"
 fi
-FILE_PATH="$(realpath -m "$FILE_PATH" 2>/dev/null || python3 -c "import os; print(os.path.normpath('$FILE_PATH'))" 2>/dev/null || echo "$FILE_PATH")"
+FILE_PATH="$(realpath -m "$FILE_PATH" 2>/dev/null || python3 -c "import os,sys; print(os.path.normpath(sys.argv[1]))" "$FILE_PATH" 2>/dev/null || echo "$FILE_PATH")"
 
 # Walk up from the file to find if it's in a Wheee-managed project
 CHECK_DIR=$(dirname "$FILE_PATH")

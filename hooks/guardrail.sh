@@ -35,8 +35,8 @@ CMD_LOWER=$(echo "$COMMAND" | tr '[:upper:]' '[:lower:]')
 
 # ── Dangerous pattern detection (regex-based) ────────────────────────
 
-# 1. rm with recursive flag (with or without -f)
-if echo "$CMD_LOWER" | grep -qE "rm[[:space:]]+-[a-z]*r"; then
+# 1. rm with recursive flag — short (-r) or long (--recursive), with or without -f
+if echo "$CMD_LOWER" | grep -qE "rm[[:space:]]+(-[a-z]*r|--recursive)"; then
   echo "GUARDRAIL BLOCKED: 'rm' with recursive flag detected."
   echo "If you need to do this, ask the user for explicit confirmation first."
   exit 2
@@ -71,7 +71,7 @@ if echo "$CMD_LOWER" | grep -qE "drop[[:space:]]+(table|database)|truncate[[:spa
 fi
 
 # 6. Unsafe chmod (world-writable or no permissions)
-if echo "$CMD_LOWER" | grep -qE "chmod[[:space:]]+(777|000|666)[[:space:]]"; then
+if echo "$CMD_LOWER" | grep -qE "chmod[[:space:]]+(777|000|666)([[:space:]]|$)"; then
   echo "GUARDRAIL BLOCKED: Unsafe chmod detected (777/000/666)."
   echo "If you need to do this, ask the user for explicit confirmation first."
   exit 2
@@ -103,7 +103,7 @@ PROTECTED=(
 
 for file in "${PROTECTED[@]}"; do
   if echo "$CMD_LOWER" | grep -qF "$file"; then
-    if echo "$CMD_LOWER" | grep -qE "(rm |del |unlink |mv |>>|>|truncate )"; then
+    if echo "$CMD_LOWER" | grep -qE "(rm[[:space:]]|del[[:space:]]|unlink[[:space:]]|mv[[:space:]]|>>|>|truncate[[:space:]])"; then
       echo "GUARDRAIL BLOCKED: Cannot delete/overwrite protected file '$file'."
       exit 2
     fi
